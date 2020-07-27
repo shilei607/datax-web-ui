@@ -109,7 +109,15 @@ export default {
         }
         // 组装
         dsQueryApi.getTables(obj).then(response => {
-          this.wTbList = response
+          this.wTbList = response//写入数据库现有表
+          //和读取源选中的表集合做对比，如果写入数据库不存在此表则新增到写入数据库表集合中
+          if(this.readerForm.tables.length > 0){
+            this.readerForm.tables.forEach(it => {
+              if(this.wTbList.indexOf(it) == -1){
+                this.wTbList.push(it);
+              }
+            });
+          }
         })
       }
     },

@@ -47,7 +47,7 @@
         <el-checkbox v-model="writerForm.checkAll" :indeterminate="writerForm.isIndeterminate" @change="wHandleCheckAllChange">全选</el-checkbox>
         <div style="margin: 15px 0;" />
         <el-checkbox-group v-model="writerForm.columns" @change="wHandleCheckedChange">
-          <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c }}</el-checkbox>
+          <el-checkbox v-for="c in fromColumnList" :key="c" :label="c">{{ c.split(':')[0] }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
     </el-form>
@@ -77,7 +77,7 @@ export default {
         tableName: '',
         checkAll: false,
         isIndeterminate: true,
-        ifCreateTable: false,
+        ifCreateTable: true,     //sl 7月17日 改，false变为true
         upsertInfo: {
           isUpsert: '',
           upsertKey: ''
@@ -122,7 +122,14 @@ export default {
         // 组装
         dsQueryApi.getTables(obj).then(response => {
           this.wTbList = response
+          //将读取的表名加入到列表 【sl 新增 2020-7-17】
+          this.fromTableName = this.readerForm.tableName
         })
+        //按照reader源读取到的列，直接设置写入列集合
+        this.fromColumnList = this.readerForm.columns
+        this.writerForm.checkAll = true//默认列全部选中
+
+        this.getColumns('writer')
       }
     },
     wDsChange(e) {
@@ -142,10 +149,12 @@ export default {
     // 获取表字段
     getColumns() {
       const obj = {
+        datasourceIdR: this.readerForm.datasourceId,
+        tableNameR: this.readerForm.tableName,
         datasourceId: this.writerForm.datasourceId,
         tableName: this.writerForm.tableName
       }
-      dsQueryApi.getColumns(obj).then(response => {
+      dsQueryApi.getColumnsByrelation(obj).then(response => {
         this.fromColumnList = response
         this.writerForm.columns = response
         this.writerForm.checkAll = true

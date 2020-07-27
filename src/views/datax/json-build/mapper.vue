@@ -10,6 +10,7 @@ export default {
   components: { FieldMapper },
   methods: {
     sendColumns(fromColumnsList, toColumnsList) {
+      console.log(toColumnsList)
       this.$refs.mapper.fromColumnsList = fromColumnsList
       this.$refs.mapper.toColumnsList = toColumnsList
     },

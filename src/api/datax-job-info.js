@@ -93,7 +93,7 @@ export function getJobIdList(params) {
 // batchAdd
 export function batchAddJob(data) {
   return request({
-    url: '/api/job/batchAdd',
+    url: '/api/job/batchAddMongo',
     method: 'post',
     data
   })
